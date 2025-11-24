@@ -125,30 +125,30 @@ export default function Home() {
   return (
     <div className="space-y-16" suppressHydrationWarning>
       {/* Hero Section */}
-      <section className="text-center space-y-6">
-        <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium">
+      <section className="text-center space-y-4 md:space-y-6">
+        <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium">
           <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
           AI-Powered Marketing Tools
         </div>
-        <h1 className="text-5xl font-bold text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100">
           Professional Marketing Analytics
         </h1>
-        <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-base md:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed px-4">
           Streamline your marketing workflow with intuitive calculators and analytics tools designed for modern media buying
         </p>
         
         {/* Search */}
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto px-4 md:px-0">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <span className="text-zinc-400">🔍</span>
+            <div className="absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center pointer-events-none">
+              <span className="text-zinc-400 text-sm md:text-base">🔍</span>
             </div>
             <input
               type="text"
               placeholder="Search tools (e.g., budget calculator, UTM builder, ROI analysis)"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 text-lg border border-zinc-200 dark:border-zinc-700 rounded-2xl bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 md:pl-12 pr-3 md:pr-4 py-3 md:py-4 text-sm md:text-lg border border-zinc-200 dark:border-zinc-700 rounded-xl md:rounded-2xl bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -156,19 +156,19 @@ export default function Home() {
 
       {/* Quick Access */}
       {(favoriteTools.length > 0 || recentTools.length > 0) && (
-        <section className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section className="space-y-6 md:space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             {favoriteTools.length > 0 && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+              <div className="space-y-3 md:space-y-4">
+                <h2 className="text-lg md:text-2xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                   <span>⭐</span> Favorites
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                   {favoriteTools.map((tool) => (
                     <Link key={tool.href} href={tool.href}>
-                      <div className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer">
-                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">{tool.label}</h3>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</p>
+                      <div className="p-3 md:p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg md:rounded-xl hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer">
+                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1 text-sm md:text-base">{tool.label}</h3>
+                        <p className="text-xs md:text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</p>
                       </div>
                     </Link>
                   ))}
@@ -177,16 +177,16 @@ export default function Home() {
             )}
             
             {recentTools.length > 0 && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+              <div className="space-y-3 md:space-y-4">
+                <h2 className="text-lg md:text-2xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                   <span>🕒</span> Recently Used
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                   {recentTools.map((tool) => (
                     <Link key={tool.href} href={tool.href}>
-                      <div className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer">
-                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">{tool.label}</h3>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</p>
+                      <div className="p-3 md:p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg md:rounded-xl hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer">
+                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1 text-sm md:text-base">{tool.label}</h3>
+                        <p className="text-xs md:text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</p>
                       </div>
                     </Link>
                   ))}

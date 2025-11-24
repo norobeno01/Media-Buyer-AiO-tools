@@ -99,7 +99,7 @@ export default function Sidebar() {
   }, [favorites, allItems]);
 
   return (
-    <aside className="w-80 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col" suppressHydrationWarning>
+    <aside className="hidden md:flex w-80 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex-col" suppressHydrationWarning>
       {/* Header */}
       <div className="p-6 border-b border-zinc-200 dark:border-zinc-800" suppressHydrationWarning>
         <Link href="/" className="flex items-center gap-3 group">
