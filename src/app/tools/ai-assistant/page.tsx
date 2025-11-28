@@ -32,12 +32,14 @@ export default function AIAssistantPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [provider, setProvider] = useState<"gemini" | "openrouter">("gemini");
-  const [models, setModels] = useState<string[]>(["gemini-1.5-flash-latest", "gemini-1.5-pro-latest"]);
+  const [models, setModels] = useState<string[]>([]);
   const [model, setModel] = useState<string>("auto");
   const [template, setTemplate] = useState<string>("none");
 
   useEffect(() => {
     let mounted = true;
+    setModels([]);
+    setModel("auto");
     const url = provider === "gemini" ? "/api/gemini/models" : "/api/openrouter/models";
     fetch(url)
       .then(async (r) => (r.ok ? r.json() : Promise.reject(await r.text())))
@@ -55,9 +57,9 @@ export default function AIAssistantPage() {
                 .filter(Boolean)
             : [];
         }
-        if (mounted && names.length) setModels(names);
+        if (mounted) setModels(names);
       })
-      .catch(() => {/* ignore */});
+      .catch(() => { if (mounted) setModels([]); });
     return () => { mounted = false; };
   }, [provider]);
 
@@ -213,21 +215,23 @@ export default function AIAssistantPage() {
             placeholder="Describe your task..."
           />
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={run}
-              disabled={loading}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-xl transition-colors"
-            >
-              {loading ? "Generating..." : "Generate"}
-            </button>
-            <button
-              onClick={() => setModel("gemini-1.5-flash-latest")}
-              className="px-4 py-3 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
-            >
-              Use flash-latest
-            </button>
-          </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={run}
+                disabled={loading}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-xl transition-colors"
+              >
+                {loading ? "Generating..." : "Generate"}
+              </button>
+              {provider === "gemini" && (
+                <button
+                  onClick={() => setModel("gemini-1.5-flash-latest")}
+                  className="px-4 py-3 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
+                >
+                  Use flash-latest
+                </button>
+              )}
+            </div>
         </div>
       </div>
 
