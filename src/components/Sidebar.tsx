@@ -16,6 +16,8 @@ const sections = [
       { href: "/tools/budget", label: "Budget Calculator" },
       { href: "/tools/media-plan", label: "Media Plan" },
       { href: "/tools/budget-pacing", label: "Budget Pacing" },
+      { href: "/tools/profit-led-pacing", label: "Profit-Led Pacing" },
+      { href: "/tools/bid-landscape", label: "Bid Landscape Explorer" },
     ]
   },
   {
@@ -29,6 +31,9 @@ const sections = [
       { href: "/tools/keyword-finder", label: "Keyword Finder" },
       { href: "/tools/seo-tools", label: "SEO Tools" },
       { href: "/tools/reporting-snapshot", label: "Reporting Snapshot" },
+      { href: "/tools/channel-conflict", label: "Channel Conflict Detector" },
+      { href: "/tools/holdout-calculator", label: "Holdout Group Calculator" },
+      { href: "/tools/mta-builder", label: "MTA Builder" },
     ]
   },
   {
@@ -39,6 +44,8 @@ const sections = [
       { href: "/tools/creative-tracker", label: "Creative Tracker" },
       { href: "/tools/copywriting-tool", label: "Copywriting Helper" },
       { href: "/tools/ai-assistant", label: "AI Assistant" },
+      { href: "/tools/creative-heatmap", label: "Creative Saturation Heatmap" },
+      { href: "/tools/media-brief", label: "AI Media Brief Generator" },
     ]
   },
   {
@@ -47,6 +54,8 @@ const sections = [
       { href: "/tools/utm-builder", label: "UTM Builder" },
       { href: "/tools/pixel-helper", label: "Pixel Helper" },
       { href: "/tools/redirect-tester", label: "Redirect Tester" },
+      { href: "/tools/roas-ebitda", label: "ROAS → EBITDA Translator" },
+      { href: "/tools/cashflow-forecast", label: "Cash Flow Forecast" },
     ]
   },
   {
@@ -54,6 +63,14 @@ const sections = [
     items: [
       { href: "/tools/performance-grader", label: "Performance Grader" },
       { href: "/tools/funnel-analyzer", label: "Funnel Analyzer" },
+      { href: "/tools/privacy-impact", label: "iOS/Privacy Impact Simulator" },
+    ]
+  }
+  ,
+  {
+    title: "Strategy",
+    items: [
+      { href: "/tools/strategy-planner", label: "Marketing Strategy Advanced Planner" },
     ]
   }
 ];
@@ -102,15 +119,18 @@ export default function Sidebar() {
     <aside className="hidden md:flex w-80 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex-col" suppressHydrationWarning>
       {/* Header */}
       <div className="p-6 border-b border-zinc-200 dark:border-zinc-800" suppressHydrationWarning>
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-            M
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">MBA Tools</h1>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Marketing Analytics</p>
-          </div>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+              M
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">MBA Tools</h1>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Marketing Analytics</p>
+            </div>
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Search */}
@@ -192,9 +212,8 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-zinc-200 dark:border-zinc-800" suppressHydrationWarning>
-        <div className="flex items-center justify-between">
-          <ThemeToggle />
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">v1.0</span>
+        <div className="flex items-center justify-end">
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">v1.1</span>
         </div>
       </div>
     </aside>

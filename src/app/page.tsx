@@ -16,10 +16,13 @@ const tools: ToolItem[] = [
   { href: "/tools/budget", label: "Budget Calculator", description: "Plan budgets by channel and timeframe", category: "Planning" },
   { href: "/tools/media-plan", label: "Media Plan", description: "Build weekly plans you can share", category: "Planning" },
   { href: "/tools/budget-pacing", label: "Budget Pacing", description: "Distribute budgets across dates", category: "Planning" },
+  { href: "/tools/profit-first-budget", label: "Profit-First Budget", description: "Max ad spend for target net margin", category: "Planning" },
+  { href: "/tools/budget-optimizer", label: "Cross-Channel Budget Optimizer", description: "Allocate spend using diminishing returns", category: "Planning" },
 
   // Analysis
   { href: "/tools/costs", label: "CPM/CPC/CPA", description: "Convert between pricing models", category: "Analysis" },
   { href: "/tools/roi", label: "ROI & Breakeven", description: "Evaluate ROAS and breakeven points", category: "Analysis" },
+  { href: "/tools/breakeven-roas", label: "Break-even ROAS", description: "Minimum ROAS and max CAC after costs", category: "Analysis" },
   { href: "/tools/reach-frequency", label: "Reach & Frequency", description: "Estimate reach from spend and CPM", category: "Analysis" },
   { href: "/tools/abtest", label: "A/B Test Calculator", description: "Compute sample size and significance", category: "Analysis" },
   { href: "/tools/audience-overlap", label: "Audience Overlap", description: "Estimate overlap between audiences", category: "Analysis" },
@@ -30,6 +33,7 @@ const tools: ToolItem[] = [
   { href: "/tools/reporting-snapshot", label: "Reporting Snapshot", description: "Summarize performance metrics", category: "Analysis" },
   { href: "/tools/performance-grader", label: "Performance Grader", description: "Grade campaign performance against benchmarks", category: "Analysis" },
   { href: "/tools/funnel-analyzer", label: "Funnel Analyzer", description: "Analyze conversion funnels and identify optimization opportunities", category: "Analysis" },
+  { href: "/tools/true-cac-cohort", label: "True CAC with Cohort Retention", description: "Blend CAC with 30/60/90-day retention revenue", category: "Analysis" },
   { href: "/tools/diagnostics", label: "Diagnostics", description: "Comprehensive website health check and performance analysis", category: "Diagnostics" },
 
   // Creative
@@ -49,9 +53,20 @@ const tools: ToolItem[] = [
   { href: "/tools/comments-picker", label: "Comments Picker", description: "Pick giveaway winners", category: "Operations" },
   { href: "/tools/policy-checker", label: "Policy Checker", description: "Check ad policy compliance", category: "Operations" },
   { href: "/tools/trending-tool", label: "Trending Helper", description: "Discover trending topics", category: "Operations" },
+  { href: "/tools/performance-digest", label: "Performance Digest", description: "Auto-generate executive summaries", category: "Operations" },
 
   // Imports
   { href: "/tools/audience-overlap-import", label: "Audience Overlap Import", description: "Import overlap data", category: "Operations" },
+  { href: "/tools/profit-led-pacing", label: "Profit-Led Pacing Engine", description: "Dynamic pacing driven by margin performance", category: "Planning" },
+  { href: "/tools/bid-landscape", label: "Bid Landscape Explorer", description: "Model bid changes vs. volume and efficiency", category: "Planning" },
+  { href: "/tools/channel-conflict", label: "Channel Conflict Detector", description: "Identify cross-channel cannibalization via windows", category: "Analysis" },
+  { href: "/tools/holdout-calculator", label: "Holdout Group Calculator", description: "Size and duration for lift experiments", category: "Analysis" },
+  { href: "/tools/mta-builder", label: "Multi-Touch Attribution Builder", description: "Build and compare rule-based models", category: "Analysis" },
+  { href: "/tools/roas-ebitda", label: "ROAS → EBITDA Translator", description: "Translate ROAS into finance metrics", category: "Operations" },
+  { href: "/tools/cashflow-forecast", label: "Cash Flow Forecast for Ad Spend", description: "Project cash flows from ad schedules", category: "Operations" },
+  { href: "/tools/creative-heatmap", label: "Creative Saturation Heatmap", description: "Visualize fatigue via frequency and CTR decay", category: "Creative" },
+  { href: "/tools/media-brief", label: "AI Media Brief Generator", description: "Create actionable briefs from goals and assets", category: "Creative" },
+  { href: "/tools/strategy-planner", label: "Marketing Strategy Advanced Planner", description: "Guided strategy from goals to execution", category: "Strategy" },
 ];
 
 export default function Home() {
@@ -210,6 +225,7 @@ export default function Home() {
                   {category === "Creative" && "Design and creative optimization tools"}
                   {category === "Operations" && "Workflow and operational efficiency tools"}
                   {category === "Diagnostics" && "Technical analysis and troubleshooting tools"}
+                  {category === "Strategy" && "End-to-end strategy design with P&L alignment and AI-assisted scenarios"}
                 </p>
               </div>
             </div>
