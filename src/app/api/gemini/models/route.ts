@@ -4,8 +4,14 @@ export async function GET() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "Missing GEMINI_API_KEY in environment." },
-      { status: 500 }
+      {
+        models: [
+          { name: "models/gemini-1.5-flash-latest" },
+          { name: "models/gemini-1.5-pro-latest" },
+        ],
+        note: "Fallback list provided due to missing GEMINI_API_KEY",
+      },
+      { status: 200 }
     );
   }
 
@@ -29,8 +35,14 @@ export async function GET() {
     }
   } catch (err: any) {
     return NextResponse.json(
-      { error: err?.message || "Failed to list models." },
-      { status: 502 }
+      {
+        models: [
+          { name: "models/gemini-1.5-flash-latest" },
+          { name: "models/gemini-1.5-pro-latest" },
+        ],
+        note: "Fallback list provided due to error",
+      },
+      { status: 200 }
     );
   }
 }
