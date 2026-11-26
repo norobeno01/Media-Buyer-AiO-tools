@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MBA Tools
 
-## Getting Started
+A web toolkit for media buyers and performance marketers: budget planning, ROI maths, UTM building, pixel checks, creative QA and more, in one dashboard. Built with Next.js, React and Tailwind CSS.
 
-First, run the development server:
+![MBA Tools dashboard](docs/screenshots/home.png)
+
+## What is inside
+
+About 47 tools grouped by job:
+
+| Category | Tools |
+| --- | --- |
+| Planning | Budget Calculator, Media Plan, Budget Pacing, Profit-First Budget, Profit-Led Pacing, Cross-Channel Budget Optimizer, Bid Landscape Explorer |
+| Analysis | CPM/CPC/CPA, ROI and Breakeven, Break-even ROAS, Reach and Frequency, A/B Test Calculator, Audience Overlap, Holdout Group Calculator, True CAC with Cohort Retention, Funnel Analyzer, Landing Analyzer, Performance Grader, SEO Tools, Keyword Finder and more |
+| Operations | UTM Builder, Bulk UTM, Pixel Checker, Pixel Helper, Redirect Tester, Policy Checker, Performance Digest, Cash Flow Forecast for Ad Spend and more |
+| Creative | Creative QA, Creative Specs, Creative Tracker, Creative Saturation Heatmap, Copywriting Helper, Ad Forms, AI Assistant, AI Media Brief Generator |
+| Strategy | Marketing Strategy Advanced Planner |
+
+![Budget Pacing tool](docs/screenshots/tools-budget-pacing.png)
+
+## How it works
+
+- Most calculators run entirely in your browser. Favourites and recently used tools are saved in your browser's local storage.
+- Three tools call server routes: Pixel Checker, Landing Analyzer and Redirect Tester fetch the page you enter. They only accept public `http` and `https` URLs. Localhost, private network addresses, link-local and cloud metadata addresses are rejected, redirects are re-checked on every hop, and responses are capped at 2 MB with a 10 second timeout.
+- The AI tools (AI Assistant, AI Media Brief Generator and other AI helpers) need your own API key. Without a key they return an error instead of a result.
+
+## Getting started
+
+Requires Node.js 20 or newer.
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Optional environment variables (create `.env.local`, which is git-ignored):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+GEMINI_API_KEY=your-google-ai-studio-key
+OPENROUTER_API_KEY=your-openrouter-key
+```
 
-## Learn More
+Production build:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Known limits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- The server routes block internal addresses, but the DNS lookup used for the check is separate from the one `fetch` performs. If you deploy this publicly, also keep the server off your internal network.
+- There is no authentication or rate limiting. Do not expose the AI routes publicly with a paid API key without adding both.
+- Tool results are estimates from the numbers you enter. Check them before spending real budget.
+- `npm run lint` still reports some `any` type errors in older tool pages.
 
-## Deploy on Vercel
+## Project layout
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/app/tools/      one folder per tool
+src/app/api/        server routes (AI providers, page checks, redirect tracing)
+src/lib/safeFetch.ts  URL validation used by the page-checking routes
+src/components/     sidebar, header, shared UI
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Issues and pull requests are welcome. Please run `npm run build` before opening a pull request.
+
+## Licence
+
+No licence has been chosen yet. Until one is added, all rights are reserved by the author.

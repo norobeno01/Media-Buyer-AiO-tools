@@ -25,52 +25,23 @@ export default function RedirectTesterPage() {
       const response = await fetch(`/api/redirect-test?url=${encodeURIComponent(url)}`);
       const endTime = Date.now();
       
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || `HTTP ${response.status}`);
+      }
       setResults({
         ...data,
         totalTime: endTime - startTime
       });
     } catch (error) {
-      // Fallback for client-side testing without API
-      const mockResults: {
-        originalUrl: string;
-        finalUrl: string;
-        redirectChain: { url: string; status: number; statusText: string }[];
-        totalRedirects: number;
-        totalTime: number;
-        errors: string[];
-      } = {
+      setResults({
         originalUrl: url,
-        finalUrl: url, // In real implementation, this would be the final destination
-        redirectChain: [
-          { url: url, status: 301, statusText: "Moved Permanently" },
-          { url: url.replace('http:', 'https:'), status: 302, statusText: "Found" },
-          { url: url.replace('http:', 'https:').replace('www.', ''), status: 200, statusText: "OK" }
-        ],
-        totalRedirects: 2,
-        totalTime: Math.floor(Math.random() * 1000) + 500,
-        errors: []
-      };
-      
-      // Simulate different redirect scenarios based on URL
-      if (url.includes('broken')) {
-        mockResults.errors.push("Connection timeout - URL may be unreachable");
-        mockResults.redirectChain = [{ url: url, status: 0, statusText: "Connection Failed" }];
-        mockResults.totalRedirects = 0;
-      } else if (url.includes('loop')) {
-        mockResults.errors.push("Redirect loop detected - too many redirects");
-        mockResults.redirectChain = mockResults.redirectChain.slice(0, 1);
-        mockResults.totalRedirects = 5;
-      } else if (url.includes('404')) {
-        mockResults.redirectChain[mockResults.redirectChain.length - 1] = { url: url, status: 404, statusText: "Not Found" };
-        mockResults.errors.push("Final destination returned 404 error");
-      }
-      
-      setResults(mockResults);
+        finalUrl: url,
+        redirectChain: [],
+        totalRedirects: 0,
+        totalTime: 0,
+        errors: [error instanceof Error ? error.message : "Request failed"],
+      });
     } finally {
       setIsLoading(false);
     }

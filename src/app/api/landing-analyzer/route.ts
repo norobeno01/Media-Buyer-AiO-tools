@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { safeFetchText } from "@/lib/safeFetch";
 
 function extractMetaDescription(html: string): string | null {
   const m = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i);
@@ -32,13 +33,11 @@ export async function POST(req: NextRequest) {
       return new Response(JSON.stringify({ error: "Invalid URL" }), { status: 400 });
     }
 
-    const res = await fetch(url, {
-      headers: { "User-Agent": "MBA-Tools/1.0 (LandingAnalyzer)" },
-    });
+    const res = await safeFetchText(url, { "User-Agent": "MBA-Tools/1.0 (LandingAnalyzer)" });
     if (!res.ok) {
       return new Response(JSON.stringify({ error: `Fetch failed: ${res.status}` }), { status: 502 });
     }
-    const html = await res.text();
+    const html = res.text;
 
     // Basic content and SEO
     const title = extractTitle(html);
@@ -123,7 +122,8 @@ export async function POST(req: NextRequest) {
     };
 
     return new Response(JSON.stringify({ ok: true, analysis: result }), { status: 200 });
-  } catch {
-    return new Response(JSON.stringify({ error: "Analyze failed" }), { status: 500 });
+  } catch (e) {
+    const blocked = e instanceof Error && /allowed|Invalid URL/.test(e.message);
+    return new Response(JSON.stringify({ error: blocked && e instanceof Error ? e.message : "Analyze failed" }), { status: blocked ? 400 : 500 });
   }
 }
