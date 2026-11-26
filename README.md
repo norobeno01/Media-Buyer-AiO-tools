@@ -22,7 +22,7 @@ About 47 tools grouped by job:
 
 - Most calculators run entirely in your browser. Favourites and recently used tools are saved in your browser's local storage.
 - Three tools call server routes: Pixel Checker, Landing Analyzer and Redirect Tester fetch the page you enter. They only accept public `http` and `https` URLs. Localhost, private network addresses, link-local and cloud metadata addresses are rejected, redirects are re-checked on every hop, and responses are capped at 2 MB with a 10 second timeout.
-- The AI tools (AI Assistant, AI Media Brief Generator and other AI helpers) need your own API key. Without a key they return an error instead of a result.
+- The AI Assistant and Copywriting Helper call Google Gemini or OpenRouter through server routes and need your own API key. Without a key they return an error instead of a result.
 
 ## Getting started
 
