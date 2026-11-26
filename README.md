@@ -51,7 +51,7 @@ npm start
 
 ## Known limits
 
-- The server routes block internal addresses, but the DNS lookup used for the check is separate from the one `fetch` performs. If you deploy this publicly, also keep the server off your internal network.
+- The server routes block internal addresses at connection time (the checked DNS result is the one connected to) and on every redirect. Defence in depth still applies: if you deploy this publicly, keep the server off your internal network. HTTP proxies and non-Node runtimes (edge) are not covered by this guard.
 - There is no authentication or rate limiting. Do not expose the AI routes publicly with a paid API key without adding both.
 - Tool results are estimates from the numbers you enter. Check them before spending real budget.
 - `npm run lint` still reports some `any` type errors in older tool pages.

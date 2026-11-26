@@ -1,4 +1,7 @@
-import { lookup } from "node:dns/promises";
+import { lookup } from "node:dns";
+import { lookup as lookupAll } from "node:dns/promises";
+import http from "node:http";
+import https from "node:https";
 import net from "node:net";
 
 const MAX_REDIRECTS = 5;
@@ -36,6 +39,55 @@ function isPrivateAddress(ip: string): boolean {
   return true;
 }
 
+/**
+ * DNS lookup used by the actual connection. It resolves the name, rejects private results and hands the
+ * validated address to the socket, so the address that was checked is the address that is connected to.
+ */
+function guardedLookup(hostname: string, options: any, cb: any) {
+  lookup(hostname, { all: true }, (err, addresses) => {
+    if (err) return cb(err);
+    const list = addresses as { address: string; family: number }[];
+    if (list.length === 0 || list.some((a) => isPrivateAddress(a.address))) {
+      return cb(new Error("Private or local addresses are not allowed"));
+    }
+    if (options && options.all) return cb(null, list);
+    return cb(null, list[0].address, list[0].family);
+  });
+}
+
+type RawResponse = { status: number; statusText: string; location: string | null; body: Buffer };
+
+function rawRequest(url: URL, headers: Record<string, string>, maxBytes: number): Promise<RawResponse> {
+  return new Promise((resolve, reject) => {
+    const mod = url.protocol === "https:" ? https : http;
+    const req = mod.request(
+      url,
+      { method: "GET", headers, lookup: guardedLookup as any, timeout: TIMEOUT_MS },
+      (res) => {
+        const chunks: Buffer[] = [];
+        let size = 0;
+        res.on("data", (c: Buffer) => {
+          size += c.length;
+          if (size <= maxBytes) chunks.push(c);
+          else if (size > maxBytes * 2) res.destroy();
+        });
+        const done = () =>
+          resolve({
+            status: res.statusCode ?? 0,
+            statusText: res.statusMessage ?? "",
+            location: (res.headers.location as string | undefined) ?? null,
+            body: Buffer.concat(chunks).subarray(0, maxBytes),
+          });
+        res.on("end", done);
+        res.on("close", done);
+      }
+    );
+    req.on("timeout", () => req.destroy(new Error("Timed out")));
+    req.on("error", reject);
+    req.end();
+  });
+}
+
 /** Throws if the URL is not a public http(s) address. */
 export async function assertPublicUrl(raw: string): Promise<URL> {
   let url: URL;
@@ -54,7 +106,7 @@ export async function assertPublicUrl(raw: string): Promise<URL> {
   if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".internal") || host.endsWith(".local")) {
     throw new Error("Local addresses are not allowed");
   }
-  const addresses = net.isIP(host) ? [{ address: host }] : await lookup(host, { all: true });
+  const addresses = net.isIP(host) ? [{ address: host }] : await lookupAll(host, { all: true });
   if (addresses.length === 0 || addresses.some((a) => isPrivateAddress(a.address))) {
     throw new Error("Private or local addresses are not allowed");
   }
@@ -64,8 +116,8 @@ export async function assertPublicUrl(raw: string): Promise<URL> {
 /**
  * Fetches a public web page. Each redirect hop is re-validated, the request has a
  * timeout and the body is capped, so the server cannot be pointed at internal hosts.
- * Note: DNS is resolved once for validation and again by fetch, so a hostile DNS server
- * could still race the check. For stronger isolation run the app without access to internal networks.
+ * The connection itself uses a guarded DNS lookup, so the checked address is the one connected to
+ * (no separate resolve-then-fetch gap). Proxies via environment variables are not used.
  */
 export async function safeFetchText(
   raw: string,
@@ -73,18 +125,12 @@ export async function safeFetchText(
 ): Promise<{ status: number; ok: boolean; text: string; finalUrl: string }> {
   let current = await assertPublicUrl(raw);
   for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-    const res = await fetch(current, {
-      headers,
-      redirect: "manual",
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
-    if (res.status >= 300 && res.status < 400 && res.headers.get("location")) {
-      current = await assertPublicUrl(new URL(res.headers.get("location")!, current).toString());
+    const res = await rawRequest(current, headers, MAX_BYTES);
+    if (res.status >= 300 && res.status < 400 && res.location) {
+      current = await assertPublicUrl(new URL(res.location, current).toString());
       continue;
     }
-    const buf = await res.arrayBuffer();
-    const text = new TextDecoder().decode(buf.slice(0, MAX_BYTES));
-    return { status: res.status, ok: res.ok, text, finalUrl: current.toString() };
+    return { status: res.status, ok: res.status >= 200 && res.status < 300, text: res.body.toString("utf8"), finalUrl: current.toString() };
   }
   throw new Error("Too many redirects");
 }
@@ -103,22 +149,16 @@ export async function traceRedirects(raw: string): Promise<{
   const chain: RedirectHop[] = [];
   let current = await assertPublicUrl(raw);
   for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-    let res: Response;
+    let res: RawResponse;
     try {
-      res = await fetch(current, {
-        method: "GET",
-        headers: { "User-Agent": "MBA-Tools/1.0 (RedirectTester)" },
-        redirect: "manual",
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
+      res = await rawRequest(current, { "User-Agent": "MBA-Tools/1.0 (RedirectTester)" }, 1024);
     } catch {
-      chain.push({ url: current.toString(), status: 0, statusText: "Connection failed" });
-      errors.push("Connection failed or timed out");
+      chain.push({ url: current.toString(), status: 0, statusText: "Connection failed or blocked" });
+      errors.push("Connection failed, timed out or blocked");
       break;
     }
     chain.push({ url: current.toString(), status: res.status, statusText: res.statusText });
-    await res.body?.cancel();
-    const location = res.headers.get("location");
+    const location = res.location;
     if (res.status >= 300 && res.status < 400 && location) {
       if (hop === MAX_REDIRECTS) {
         errors.push(`More than ${MAX_REDIRECTS} redirects, stopped following`);
