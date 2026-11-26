@@ -69,6 +69,5 @@ src/components/     sidebar, header, shared UI
 
 Issues and pull requests are welcome. Please run `npm run build` before opening a pull request.
 
-## Licence
-
-No licence has been chosen yet. Until one is added, all rights are reserved by the author.
+## License
+The source code is licensed under the MIT License (see [LICENSE](LICENSE)). The licence covers the code only. Photos and other images (including images from Unsplash), brand names, logos and business text (for example restaurant or visa-agency details) are not covered: they keep their own terms or are reserved by their owners.
